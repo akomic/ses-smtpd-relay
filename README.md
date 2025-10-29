@@ -19,6 +19,7 @@ Ensure AWS credentials are configured via:
 - EC2/ECS/EKS instance roles
 - `~/.aws/credentials` file  
 - Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+- Cross-account role assumption: `AWS_ROLE_ARN`, `AWS_ROLE_SESSION_NAME`
 
 Required IAM permission: `ses:SendRawEmail`
 

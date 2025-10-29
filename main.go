@@ -163,6 +163,13 @@ func (s *Session) Logout() error {
 	return nil
 }
 
+func validateConfigurationSet(ctx context.Context, sesClient *ses.Client, configSetName string) error {
+	_, err := sesClient.DescribeConfigurationSet(ctx, &ses.DescribeConfigurationSetInput{
+		ConfigurationSetName: &configSetName,
+	})
+	return err
+}
+
 func makeSesClient(ctx context.Context) (*ses.Client, error) {
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
@@ -213,6 +220,14 @@ func main() {
 	sesClient, err := makeSesClient(ctx)
 	if err != nil {
 		log.Fatalf("Error creating AWS session: %s", err)
+	}
+
+	// Validate configuration set if provided
+	if *configurationSetName != "" {
+		if err := validateConfigurationSet(ctx, sesClient, *configurationSetName); err != nil {
+			log.Fatalf("Configuration set '%s' not found or inaccessible: %s", *configurationSetName, err)
+		}
+		log.Printf("Configuration set '%s' validated successfully", *configurationSetName)
 	}
 
 	addr := DefaultAddr
