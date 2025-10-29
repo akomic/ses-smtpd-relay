@@ -1,0 +1,13 @@
+FROM golang:1.23-alpine AS builder
+ARG VERSION
+RUN apk add --no-cache make 
+WORKDIR /app
+COPY . .
+RUN VERSION=$VERSION make ses-smtpd-relay
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates
+COPY --from=builder /app/ses-smtpd-relay /
+
+ENTRYPOINT [ "/ses-smtpd-relay" ]

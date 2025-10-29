@@ -1,0 +1,5 @@
+*
+!Makefile
+!go.mod
+!go.sum
+!**/*.go
