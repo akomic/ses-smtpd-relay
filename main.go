@@ -11,7 +11,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 	"github.com/aws/aws-sdk-go-v2/service/ses/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
@@ -174,6 +176,21 @@ func makeSesClient(ctx context.Context) (*ses.Client, error) {
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	// Check for role assumption from environment variables
+	if roleArn := os.Getenv("AWS_ROLE_ARN"); roleArn != "" {
+		sessionName := os.Getenv("AWS_ROLE_SESSION_NAME")
+		if sessionName == "" {
+			sessionName = "ses-smtpd-relay-session"
+		}
+		
+		stsClient := sts.NewFromConfig(cfg)
+		provider := stscreds.NewAssumeRoleProvider(stsClient, roleArn, func(o *stscreds.AssumeRoleOptions) {
+			o.RoleSessionName = sessionName
+		})
+		
+		cfg.Credentials = aws.NewCredentialsCache(provider)
 	}
 
 	// Log current AWS identity
