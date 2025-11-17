@@ -69,7 +69,7 @@ make ses-smtpd-relay
 
 ```bash
 make docker
-docker run -p 2500:2500 ghcr.io/akomic/ses-smtpd-relay:latest
+docker run -p 2500:2500 ghcr.io/ORG/ses-smtpd-relay:latest
 ```
 
 ## License

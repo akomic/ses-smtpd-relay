@@ -1,4 +1,4 @@
-module github.com/akomic/ses-smtpd-relay
+module ses-smtpd-relay
 
 go 1.23.0
 
