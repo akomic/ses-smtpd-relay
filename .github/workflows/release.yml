@@ -40,12 +40,11 @@ jobs:
           -o ses-smtpd-relay-windows-amd64.exe main.go
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          ses-smtpd-relay-linux-amd64
-          ses-smtpd-relay-darwin-arm64
-          ses-smtpd-relay-windows-amd64.exe
-        generate_release_notes: true
+      run: |
+        gh release create ${{ github.ref_name }} \
+          ses-smtpd-relay-linux-amd64 \
+          ses-smtpd-relay-darwin-arm64 \
+          ses-smtpd-relay-windows-amd64.exe \
+          --generate-notes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
